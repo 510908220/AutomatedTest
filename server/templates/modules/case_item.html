@@ -1,0 +1,8 @@
+<tr>
+    <td style="text-align:left">{{ case_item['name']}}</td>
+    <td>{{ case_item['time']}}</td>
+    <td>{{ case_item['size']}}</td>
+    {% set case_name = case_item['name'] %}
+    <td><button type="button" class="btn btn-danger" onclick="del('{{case_name}}')">del</button></td>
+
+</tr>

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}
+
+{% end %}
+{% block body %}
+{% autoescape None %}
+<!-- Page Content -->
+<div id="page-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <form role="form" action="cases/upload" method="post" enctype="multipart/form-data">
+
+                    <div class="form-group">
+                        <label>选择用例</label>
+                        <input type="file" name="file">
+                    </div>
+
+                    <button type="submit" class="btn btn-default">上传用例</button>
+                </form>
+                <!-- Table -->
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>用例</th>
+                        <th>修改时间</th>
+                        <th>大小</th>
+                        <th>删除</th>
+
+                    </tr>
+                    </thead>
+                    {% for case_item in case_items %}
+                    {{ modules.CaseItem(case_item) }}
+                    {% end %}
+                </table>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</div>
+<!-- /#page-wrapper -->
+<script>
+    function del(case_name) {
+        $.post("/cases/del", {Action: "post", 'case_name': case_name},
+                function (data, textStatus) {
+                    window.location.reload();
+                }, "text");
+
+    }
+</script>
+{% end %}

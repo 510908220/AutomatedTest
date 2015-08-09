@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}
+
+{% end %}
+{% block body %}
+{% autoescape None %}
+<div id="page-wrapper">
+
+    <!-- /.row -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+
+                <div class="panel-body">
+                    <div class="row">
+
+                        <div class="col-lg-6">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    任务队列
+                                </div>
+                                <!-- /.panel-heading -->
+                                <form role="form" action="tasks/produce" method="post">
+                                    <div class="form-group">
+                                        <label>版本号:</label>
+                                        <input class="form-control" name="version">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>用例选择:</label>
+                                        <select multiple class="form-control" style="height: 150px" name="cases">
+                                            {%for case_name in case_names%}
+                                            <option  value="{{case_name}}">{{case_name}}</option>
+                                            {%end%}
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>邮件:</label>
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" name="email">发送
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-default">提交任务</button>
+                                </form>
+                                <!-- .panel-body -->
+                            </div>
+                            <!-- /.panel -->
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    正在运行
+                                </div>
+                                <!-- /.panel-heading -->
+                                <div class="panel-body">
+                                    <div class="alert alert-danger">
+                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. <a href="#"
+                                                                                                     class="alert-link">Alert
+                                        Link</a>.
+                                    </div>
+
+                                </div>
+                                <!-- .panel-body -->
+                            </div>
+                            <!-- /.panel -->
+                        </div>
+                        <!-- /.col-lg-6 -->
+                        <div class="col-lg-6">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    等待中
+                                </div>
+                                <!-- /.panel-heading -->
+                                <div class="panel-body">
+                                    <div class="alert alert-warning">
+                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. <a href="#"
+                                                                                                     class="alert-link">Alert
+                                        Link</a>.
+                                    </div>
+
+                                </div>
+                                <!-- .panel-body -->
+                            </div>
+                            <!-- /.panel -->
+                        </div>
+                    </div>
+                    <!-- /.row (nested) -->
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+</div>
+<!-- /#page-wrapper -->
+
+<script>
+
+</script>
+{% end %}
