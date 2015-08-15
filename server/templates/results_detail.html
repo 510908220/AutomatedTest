@@ -1,0 +1,45 @@
+﻿??{% extends "base.html" %}
+{% block title %}
+
+{% end %}
+{% block body %}
+{% autoescape None %}
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-lg-12">
+            <h2 class="page-header">
+                版本号:{{task["version"]}}  日期:{{task["time"]}} 任务ID:{{task["_id"]}}
+            </h2>
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+
+    <!-- /.row -->
+    <div class="row">
+        <div class="col-lg-6">
+
+            {%for case in task["result"]%}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    {{case}}
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    {{task["result"][case]}}
+                </div>
+                <!-- .panel-body -->
+            </div>
+            {%end%}
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-6 -->
+
+        <!-- /.col-lg-6 -->
+    </div>
+    <!-- /.row -->
+</div>
+<!-- /#page-wrapper -->
+{% end %}
+
+
+

@@ -1,0 +1,11 @@
+﻿
+<tr class="odd gradeX">
+    <td>{{result_item["version"]}}</td>
+    <td>{{result_item["time"]}}</td>
+
+    {%set task_id = result_item["task_id"]%}
+    <td><a href="/results/{{task_id}}" class="alert-link" target="_blank">detail</a></td>
+    <td class="center">
+        <button type="button" class="btn btn-danger btn-sm" onclick="del('{{task_id}}')">del</button>
+    </td>
+</tr>

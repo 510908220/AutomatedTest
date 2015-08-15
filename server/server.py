@@ -22,18 +22,18 @@ class Application(tornado.web.Application):
 		handlers = [
 			(r"/cases/(.*?)", handle.CasesHandler),
 			(r"/tasks/(.*?)", handle.TasksHandler),
-			(r"/(.*?)", handle.HomeHandler),
-
+			(r"/results/(.*?)", handle.ResultsHandler),
+			(r"/machines/(.*?)", handle.MachinesHandler),
+			(r"/", handle.HomeHandler),
 		]
 		settings = dict(
-			blog_title=u"Dj Music",
+			blog_title=u"Automate Test",
 			template_path=os.path.join(os.path.dirname(__file__), "templates"),
 			static_path=os.path.join(os.path.dirname(__file__), "static"),
-			ui_modules={"CaseItem": uimodule.CaseItemModule},
+			ui_modules={"CaseItem": uimodule.CaseItemModule, "MachineItem": uimodule.MachineItemModule, "ResultItem":uimodule.ResultItemModule},
 			debug=True
 		)
 		super(Application, self).__init__(handlers, **settings)
-		# Have one global connection to the blog DB across all handlers
 		client = MongoClient('mongodb://localhost:27017/')
 		self.db = client[config.DB_NAME]
 

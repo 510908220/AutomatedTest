@@ -17,10 +17,11 @@
                         <div class="col-lg-6">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
-                                    任务队列
+                                    任务制定
                                 </div>
                                 <!-- /.panel-heading -->
-                                <form role="form" action="tasks/produce" method="post">
+                                <form role="form" action="/tasks/produce" method="post"
+                                      onsubmit="return validate_form(this)">
                                     <div class="form-group">
                                         <label>版本号:</label>
                                         <input class="form-control" name="version">
@@ -29,12 +30,13 @@
                                         <label>用例选择:</label>
                                         <select multiple class="form-control" style="height: 150px" name="cases">
                                             {%for case_name in case_names%}
-                                            <option  value="{{case_name}}">{{case_name}}</option>
+                                            <option value="{{case_name}}">{{case_name}}</option>
                                             {%end%}
                                         </select>
                                     </div>
                                     <div class="form-group">
                                         <label>邮件:</label>
+
                                         <div class="checkbox">
                                             <label>
                                                 <input type="checkbox" name="email">发送
@@ -54,11 +56,11 @@
                                 </div>
                                 <!-- /.panel-heading -->
                                 <div class="panel-body">
+                                    {%for running_case in running_cases%}
                                     <div class="alert alert-danger">
-                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. <a href="#"
-                                                                                                     class="alert-link">Alert
-                                        Link</a>.
+                                        {{running_case["name"]}}( {{running_case["version"]}})
                                     </div>
+                                    {%end%}
 
                                 </div>
                                 <!-- .panel-body -->
@@ -73,12 +75,11 @@
                                 </div>
                                 <!-- /.panel-heading -->
                                 <div class="panel-body">
+                                    {%for pending_case in pending_cases%}
                                     <div class="alert alert-warning">
-                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. <a href="#"
-                                                                                                     class="alert-link">Alert
-                                        Link</a>.
+                                        {{pending_case["name"]}}({{pending_case["version"]}})
                                     </div>
-
+                                    {%end%}
                                 </div>
                                 <!-- .panel-body -->
                             </div>
@@ -98,6 +99,30 @@
 <!-- /#page-wrapper -->
 
 <script>
+    function validate_required(field, alerttxt) {
+        with (field) {
+            if (value == null || value == "") {
+                alert(alerttxt);
+                return false
+            }
+            else {
+                return true
+            }
+        }
+    }
 
+    function validate_form(thisform) {
+        with (thisform) {
+            if (validate_required(version, "版本号不可以为空!") == false) {
+                version.focus();
+                return false
+            }
+            if (validate_required(cases, "至少选择一个用例!") == false) {
+                cases.focus();
+                return false
+            }
+
+        }
+    }
 </script>
 {% end %}

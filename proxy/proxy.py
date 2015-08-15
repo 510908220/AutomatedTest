@@ -129,7 +129,7 @@ class ProxyService(object):
 		return CaseState.get_state(case_name) == CaseState.FINISHED
 
 
-server = SimpleXMLRPCServer(("localhost", 8000), allow_none=True)
+server = SimpleXMLRPCServer(("172.17.0.186", 8000), allow_none=True)
 server.register_introspection_functions()
 server.register_instance(ProxyService(), allow_dotted_names=True)
 server.serve_forever()

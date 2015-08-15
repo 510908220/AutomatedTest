@@ -1,0 +1,15 @@
+<tr>
+    <td style="text-align:left">{{ machine_item['ip']}}</td>
+    {%set machine_state = machine_item['state']%}
+    {%if machine_state == 0%}
+    <td><span class="label label-success">free</span></td>
+    {%elif machine_state== 1%}
+    <td><span class="label label-danger">running</span></td>
+    {%else%}
+    <td><span class="label label-default">unline</span></td>
+    {%end%}
+    {%set ip = machine_item['ip']%}
+    <td>
+        <button type="button" class="btn btn-danger btn-sm" onclick="del('{{ip}}')">del</button>
+    </td>
+</tr>
