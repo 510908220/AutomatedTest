@@ -87,7 +87,8 @@ class ProxyService(object):
 		case_dir = cfg.CASE_DIR.joinpath(case_name)
 		if case_dir.exists():
 			shutil.rmtree(str(case_dir))
-
+		else:
+			os.makedirs(str(case_dir))
 		tmp_zip = case_dir.with_suffix(".zip")
 		with open(str(tmp_zip), 'wb') as f:
 			f.write(bin.data)
