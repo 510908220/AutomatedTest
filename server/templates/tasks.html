@@ -10,6 +10,7 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="panel panel-default">
+                <input type="hidden" id="session" value="{{ session }}"/>
 
                 <div class="panel-body">
                     <div class="row">
@@ -55,12 +56,7 @@
                                     正在运行
                                 </div>
                                 <!-- /.panel-heading -->
-                                <div class="panel-body">
-                                    {%for running_case in running_cases%}
-                                    <div class="alert alert-danger">
-                                        {{running_case["name"]}}( {{running_case["version"]}})
-                                    </div>
-                                    {%end%}
+                                <div class="panel-body" id="running">
 
                                 </div>
                                 <!-- .panel-body -->
@@ -74,12 +70,8 @@
                                     等待中
                                 </div>
                                 <!-- /.panel-heading -->
-                                <div class="panel-body">
-                                    {%for pending_case in pending_cases%}
-                                    <div class="alert alert-warning">
-                                        {{pending_case["name"]}}({{pending_case["version"]}})
-                                    </div>
-                                    {%end%}
+                                <div class="panel-body" id="pending">
+
                                 </div>
                                 <!-- .panel-body -->
                             </div>
@@ -123,6 +115,39 @@
             }
 
         }
+    }
+    $(document).ready(function () {
+        document.session = $('#session').val();
+        setTimeout(reques_task_status, 100);
+    });
+
+    function reques_task_status() {
+        $.post("/tasks/status", {Action: "post"},
+                function (data, textStatus) {
+                    jQuery("#pending").empty();
+                    jQuery("#running").empty();
+                    var task_status = eval('(' + data + ')');
+
+                    var pending_cases = task_status["pending_cases"];
+                    for (var index in pending_cases) {
+                        var pending_data = "<div class='alert alert-warning'>" +
+                                pending_cases[index]["name"] + " " +
+                                pending_cases[index]["version"] + " " +
+                                "</div>";
+                        jQuery("#pending").append(pending_data);
+                    }
+
+                    var running_cases = task_status["running_cases"];
+                    for (var index in running_cases) {
+                        var running_data = "<div class='alert alert-danger'>" +
+                                running_cases[index]["name"] + " " +
+                                running_cases[index]["version"] + " " +
+                                "</div>";
+                        jQuery("#running").append(running_data);
+                    }
+
+                }, "text");
+        setTimeout(reques_task_status, 10000);
     }
 </script>
 {% end %}

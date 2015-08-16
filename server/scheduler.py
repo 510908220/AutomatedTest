@@ -2,10 +2,25 @@
 from pymongo import MongoClient
 import xmlrpc.client
 import time
+import logging
+from functools import wraps
 from handler import config
 
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
+                    datefmt='%a, %d %b %Y %H:%M:%S',
+                    filename="scheduler.log",
+                    filemode='w')
 client = MongoClient('mongodb://localhost:27017/')
 db = client[config.DB_NAME]
+
+
+def log_decorator(f):
+	@wraps(f)
+	def wrapper(*args, **kwds):
+		print('Calling decorated function')
+		return f(*args, **kwds)
+	return wrapper
 
 
 def get_machine_state(ip):
@@ -75,7 +90,6 @@ def dispatch_case(ip, case):
 	:param case: 待分发给测试机的用例
 	:return:
 	"""
-	print("dispatch_case:", ip, case)
 	proxy = xmlrpc.client.ServerProxy("http://%s:8000/" % ip)
 	if not proxy.case_exists(case["name"]):
 		case_path = config.CASES_DIR.joinpath(case["name"] + ".zip")
@@ -90,9 +104,6 @@ def update_task_result(case, result):
 	task["result"][case["name"]] = result
 	if len(task["result"]) == len(task["cases"]):
 		task["finished"] = True
-
-	print("xxx:", {"_id", task["_id"]})
-	print("yyy:", task)
 	tb_task.update({"_id": task["_id"]}, task)
 
 
@@ -107,7 +118,7 @@ def case_result_handle(ip):
 	proxy = xmlrpc.client.ServerProxy("http://%s:8000/" % ip)
 	if proxy.case_finished(case["name"]):
 		result = proxy.get_result(case["name"])
-		print("result:", result)
+		logging.info("collect result:%s %s %s" % (ip, case, result))
 		update_task_result(case, result)
 		del_running_case(case)
 
@@ -115,6 +126,7 @@ def case_result_handle(ip):
 def case_handle(ip):
 	case = pop_pending_case()
 	if case:
+		logging.info("dispatch case:%s %s" % (ip, case))
 		dispatch_case(ip, case)
 		add_running_case(case, ip)
 

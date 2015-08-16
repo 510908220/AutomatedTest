@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+import sys
 import os.path
 import tornado.escape
 import tornado.httpserver
@@ -7,7 +7,7 @@ import tornado.ioloop
 import tornado.options
 import tornado.web
 from pymongo import MongoClient
-
+from pathlib import Path
 from handler import handle
 from handler import uimodule
 from handler import config
@@ -30,7 +30,8 @@ class Application(tornado.web.Application):
 			blog_title=u"Automate Test",
 			template_path=os.path.join(os.path.dirname(__file__), "templates"),
 			static_path=os.path.join(os.path.dirname(__file__), "static"),
-			ui_modules={"CaseItem": uimodule.CaseItemModule, "MachineItem": uimodule.MachineItemModule, "ResultItem":uimodule.ResultItemModule},
+			ui_modules={"CaseItem": uimodule.CaseItemModule, "MachineItem": uimodule.MachineItemModule,
+			            "ResultItem": uimodule.ResultItemModule},
 			debug=True
 		)
 		super(Application, self).__init__(handlers, **settings)
@@ -39,6 +40,8 @@ class Application(tornado.web.Application):
 
 
 def main():
+	args = sys.argv
+	args.append("--log_file_prefix=%s" % str(Path(__file__).parent.joinpath("automate").with_suffix(".log")))
 	tornado.options.parse_command_line()
 	http_server = tornado.httpserver.HTTPServer(Application())
 	http_server.listen(options.port)

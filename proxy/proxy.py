@@ -4,6 +4,7 @@ import os
 import shutil
 from zipfile import ZipFile
 import subprocess
+import socket
 import time
 import cfg
 
@@ -108,7 +109,6 @@ class ProxyService(object):
 		"""
 		获取用例结果，并且重置代理和用例的状态
 		"""
-		data = ""
 		with open(str(cfg.CASE_DIR.joinpath(case_name).joinpath(CaseState._StateToFile[CaseState.FINISHED]))) as f:
 			data = f.read()
 		self.reset_proxy(case_name)
@@ -129,7 +129,8 @@ class ProxyService(object):
 		return CaseState.get_state(case_name) == CaseState.FINISHED
 
 
-server = SimpleXMLRPCServer(("172.17.0.186", 8000), allow_none=True)
+ip = socket.gethostbyname(socket.gethostname())
+server = SimpleXMLRPCServer((ip, 8000), allow_none=True)
 server.register_introspection_functions()
 server.register_instance(ProxyService(), allow_dotted_names=True)
 server.serve_forever()

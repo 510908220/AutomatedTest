@@ -1,5 +1,7 @@
 # encoding:utf-8
 import os
+import json
+import uuid
 import tornado.web
 import tornado.gen
 from datetime import datetime
@@ -116,25 +118,40 @@ class TasksHandler(BaseHandler):
 
 	def get_pending_cases(self):
 		tb_task = self.db[config.TB_PENDING_CASE]
-		return tb_task.find()
+		pending_cases = []
+		for case in tb_task.find():
+			del case["_id"]
+			del case["task_id"]
+			pending_cases.append(case)
+		return pending_cases
 
 	def get_running_cases(self):
 		tb_task = self.db[config.TB_RUNNING_CASE]
-		return tb_task.find()
+		running_cases = []
+		for case in tb_task.find():
+			del case["_id"]
+			del case["task_id"]
+			running_cases.append(case)
+		return running_cases
 
 	def post(self, param):
+		print("params:", param)
 		if param == "produce":
 			version = self.get_argument("version")
 			cases = self.get_arguments("cases")
 			email = True if self.get_argument("email", None) else False
 			self.add_task(version, cases, email)
-		self.redirect("/tasks/")
+			self.redirect("/tasks/")
+		elif param == "status":
+			pending_cases = self.get_pending_cases()
+			running_cases = self.get_running_cases()
+			self.write(str({"pending_cases": pending_cases, "running_cases": running_cases}))
 
 	def get(self, param):
+		session = uuid.uuid4()
 		case_items = CasesHandler.get_case_items()
 		case_names = [case_item["name"] for case_item in case_items]
-		self.render("tasks.html", case_names=case_names, pending_cases=self.get_pending_cases(),
-		            running_cases=self.get_running_cases())
+		self.render("tasks.html", session=session, case_names=case_names)
 
 
 class ResultsHandler(BaseHandler):
@@ -156,4 +173,4 @@ class ResultsHandler(BaseHandler):
 		if not param:
 			self.render("results.html", finished_task_items=self.get_finished_task_items())
 		else:
-			self.render("results_detail.html", task = self.get_task(param))
+			self.render("results_detail.html", task=self.get_task(param))
