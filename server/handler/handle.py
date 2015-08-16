@@ -174,3 +174,34 @@ class ResultsHandler(BaseHandler):
 			self.render("results.html", finished_task_items=self.get_finished_task_items())
 		else:
 			self.render("results_detail.html", task=self.get_task(param))
+
+
+class UsersHandler(BaseHandler):
+	def add_user(self, email):
+		tb_user = self.db[config.TB_USER]
+		if not tb_user.find_one({"email": email}):
+			tb_user.insert_one({"email": email})
+
+	def del_user(self, email):
+		tb_user = self.db[config.TB_USER]
+		if tb_user.find_one({"email": email}):
+			tb_user.remove({"email": email})
+
+	def get_user_items(self):
+		tb_user = self.db[config.TB_USER]
+		user_items = []
+		for user in tb_user.find():
+			user_items.append(user)
+		return user_items
+
+	def get(self, param):
+		self.render("users.html", user_items = self.get_user_items())
+
+	def post(self, param):
+		if param == "add":
+			email = self.get_argument("email")
+			self.add_user(email)
+		elif param == "del":
+			email = self.get_argument("email")
+			self.del_user(email)
+		self.redirect("/users/")

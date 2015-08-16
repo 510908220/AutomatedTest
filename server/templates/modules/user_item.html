@@ -1,0 +1,7 @@
+<tr>
+    {%set email = user_item['email']%}
+    <td style="text-align:left">{{ email}}</td>
+    <td>
+        <button type="button" class="btn btn-danger btn-sm" onclick="del('{{email}}')">del</button>
+    </td>
+</tr>

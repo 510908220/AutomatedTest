@@ -24,6 +24,7 @@ class Application(tornado.web.Application):
 			(r"/tasks/(.*?)", handle.TasksHandler),
 			(r"/results/(.*?)", handle.ResultsHandler),
 			(r"/machines/(.*?)", handle.MachinesHandler),
+			(r"/users/(.*?)", handle.UsersHandler),
 			(r"/", handle.HomeHandler),
 		]
 		settings = dict(
@@ -31,7 +32,7 @@ class Application(tornado.web.Application):
 			template_path=os.path.join(os.path.dirname(__file__), "templates"),
 			static_path=os.path.join(os.path.dirname(__file__), "static"),
 			ui_modules={"CaseItem": uimodule.CaseItemModule, "MachineItem": uimodule.MachineItemModule,
-			            "ResultItem": uimodule.ResultItemModule},
+			            "ResultItem": uimodule.ResultItemModule, "UserItem": uimodule.UserItemModule},
 			debug=True
 		)
 		super(Application, self).__init__(handlers, **settings)

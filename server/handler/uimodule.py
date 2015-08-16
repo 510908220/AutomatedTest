@@ -15,3 +15,6 @@ class MachineItemModule(tornado.web.UIModule):
 class ResultItemModule(tornado.web.UIModule):
 	def render(self, result_item):
 		return self.render_string("modules/result_item.html", result_item=result_item)
+class UserItemModule(tornado.web.UIModule):
+	def render(self, user_item):
+		return self.render_string("modules/user_item.html", user_item=user_item)
