@@ -5,6 +5,7 @@ import time
 import logging
 from functools import wraps
 from handler import config
+from handler import util
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
@@ -20,6 +21,7 @@ def log_decorator(f):
 	def wrapper(*args, **kwds):
 		print('Calling decorated function')
 		return f(*args, **kwds)
+
 	return wrapper
 
 
@@ -98,12 +100,36 @@ def dispatch_case(ip, case):
 	proxy.run_case(case["name"])
 
 
+def email_report(task):
+	def get_user_emails():
+		tb_user = db[config.TB_USER]
+		user_emails = []
+		for user in tb_user.find():
+			user_emails.append(user["email"])
+		return user_emails
+
+	email_title = task["version"]
+	email_content = ""
+	for case_name in task["result"]:
+		email_content += (case_name + "<br/>" + task["result"][case_name] + "<br/>")
+	em = util.EmailManage()
+
+	user_emails = get_user_emails()
+	if user_emails:
+		flag = em.send(email_title, email_content, user_emails)
+		logging.info("email_report:%s" % str(flag))
+	else:
+		logging.info("email_report:no user...")
+
+
 def update_task_result(case, result):
 	tb_task = db[config.TB_TASK]
 	task = tb_task.find_one(case["task_id"])
 	task["result"][case["name"]] = result
 	if len(task["result"]) == len(task["cases"]):
 		task["finished"] = True
+		if task["email"]:
+			email_report(task)
 	tb_task.update({"_id": task["_id"]}, task)
 
 
