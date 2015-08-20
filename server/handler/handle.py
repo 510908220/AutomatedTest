@@ -94,10 +94,10 @@ class MachinesHandler(BaseHandler):
 			self.del_machine(ip)
 		self.redirect("/machines/")
 
+	@tornado.web.asynchronous
 	def get(self, param):
 		machine_items = self.get_machine_items()
 		self.render("machines.html", machine_items=machine_items)
-
 
 class TasksHandler(BaseHandler):
 	def add_task(self, version, cases, email):
